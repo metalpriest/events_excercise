@@ -1,5 +1,5 @@
 test:
-	pytest
+	pytest --cov=apps --cov=api tests/
 
 install:
 	pip install -r requirements.txt
@@ -9,4 +9,4 @@ run:
 	python manage.py runserver 127.0.0.1:8000
 
 test-docker:
-	docker-compose exec api pytest
+	docker-compose exec api pytest --cov=apps --cov=api tests/
