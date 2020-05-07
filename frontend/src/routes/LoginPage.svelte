@@ -1,6 +1,7 @@
 <script>
-  import {login} from './api';
+  import {login} from '../api';
   import { createEventDispatcher } from 'svelte';
+  import { navigate } from "svelte-routing";
 
   let email = "";
   let password = "";
@@ -33,9 +34,9 @@
           if (response.status === 200) {
             isSuccess = true;
             isLoading = false;
-            dispatch('loginSuccess')
+            
           } else {
-            errors.server = response.json()
+            errors = response;
           }
         })
         .catch(err => {

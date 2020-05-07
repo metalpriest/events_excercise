@@ -1,37 +1,46 @@
 <script>
 	import { onMount } from "svelte";
 	import * as api from "./api";
-	import Event from "./Event.svelte";
-	import LoginForm from "./LoginForm.svelte";
+	import { Router, Route } from "svelte-routing";
+	import NavLink from "./components/NavLink.svelte";
+	
+	import EventDetail from "./routes/EventDetail.svelte";
+  import EventList from "./routes/EventList.svelte";
+  import LoginPage from "./routes/LoginPage.svelte";
+
 
 	export let name, events;
+	export let url = "";
 
 
-  onMount(async () => {
-    await api.listEvents()
-      .then(data => {
-      	console.log(data)
-        events = data['results'];
-      });
-  })
+  // onMount(async () => {
+  //   await api.listEvents()
+  //     .then(data => {
+  //     	console.log(data)
+  //       events = data['results'];
+  //     });
+  // })
 
 </script>
 
 <main>
-	<LoginForm on:loginSuccess={onMount}/>
+	<h1>Main page</h1>
 
+	<Router url="{url}">
+  <nav>
+    <NavLink to="login">Login</NavLink>
+<!--    <NavLink to="events">Event Detail</NavLink>-->
+    <NavLink to="events">Events List</NavLink>
+  </nav>
+  <div>
+    <Route path="events" component="{EventList}" />
+    <Route path="events/:id" component="{EventDetail}" />
+    <Route path="login" component="{LoginPage}" />
+  </div>
+	</Router>
+<!--	<LoginForm on:loginSuccess={onMount}/>-->
 
-	{#if events}
-  {#each events as event }
-    <ul>
-      <li>    
-        <Event {event} />
-      </li>
-    </ul>
-  {/each}
-{:else}
-  <p class="loading">loading...</p>
-{/if}
+	
 </main>
 
 <style>
