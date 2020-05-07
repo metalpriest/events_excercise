@@ -1,9 +1,10 @@
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout as django_logout
+from django.views.decorators.csrf import csrf_exempt
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import api_view
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
-from rest_framework.status import HTTP_201_CREATED, HTTP_200_OK
+from rest_framework.status import HTTP_201_CREATED, HTTP_200_OK, HTTP_204_NO_CONTENT
 
 from .serializers import UserSerializer
 
@@ -40,3 +41,17 @@ def sign_in(request):
     login(request._request, user)
     # TODO: user details or profile should returned
     return Response({'id': user.id, 'email': user.email}, status=HTTP_200_OK)
+
+
+@csrf_exempt
+@swagger_auto_schema(methods=['get'])
+@api_view(['GET'])
+def logout(request):
+    django_logout(request)
+
+    return Response(status=HTTP_204_NO_CONTENT)
+
+
+@api_view(['GET'])
+def check_session(request):
+    return Response({'is_authenticated': request.user.is_authenticated}, status=200)

@@ -1,25 +1,31 @@
 <script>
 	import { onMount } from "svelte";
 	import * as api from "./api";
+	import * as user from "./user";
 	import { Router, Route } from "svelte-routing";
+	import {createEventDispatcher} from "svelte";
+
 	import NavLink from "./components/NavLink.svelte";
-	
-	import EventDetail from "./routes/EventDetail.svelte";
   import EventList from "./routes/EventList.svelte";
   import LoginPage from "./routes/LoginPage.svelte";
+  import { get } from 'svelte/store';
+  import { loggedIn } from './store';
 
 
 	export let name, events;
 	export let url = "";
 
+  onMount(async () => {
+    let response = await api.checkSession();
+		if (!response.is_authenticated && get(loggedIn) === true) {
+			await logout()
+		}
+	})
 
-  // onMount(async () => {
-  //   await api.listEvents()
-  //     .then(data => {
-  //     	console.log(data)
-  //       events = data['results'];
-  //     });
-  // })
+	async function logout() {
+  	await user.logout();
+		loggedIn.set(false);
+	}
 
 </script>
 
@@ -28,17 +34,22 @@
 
 	<Router url="{url}">
   <nav>
-    <NavLink to="login">Login</NavLink>
-<!--    <NavLink to="events">Event Detail</NavLink>-->
+		{#if $loggedIn}
+			<a on:click={async () => { await logout() }}>Logout</a>
+		{:else}
+			<NavLink to="sign-up">Sign up</NavLink>
+			<NavLink to="login">Login</NavLink>
+		{/if}
     <NavLink to="events">Events List</NavLink>
   </nav>
   <div>
     <Route path="events" component="{EventList}" />
-    <Route path="events/:id" component="{EventDetail}" />
     <Route path="login" component="{LoginPage}" />
+		<Route path="sign-up" let:params>
+			<LoginPage isLoginPage={false}/>
+		</Route>
   </div>
 	</Router>
-<!--	<LoginForm on:loginSuccess={onMount}/>-->
 
 	
 </main>

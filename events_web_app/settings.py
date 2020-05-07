@@ -80,7 +80,10 @@ ROOT_URLCONF = 'events_web_app.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')]
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates'),
+            os.path.join(BASE_DIR, "frontend", "public"),
+        ]
         ,
         'APP_DIRS': True,
         'OPTIONS': {
@@ -142,11 +145,18 @@ USE_L10N = True
 USE_TZ = True
 
 
+
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
 STATIC_ROOT = '/static_collected/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "frontend", "public"),
+    '/var/www/static/',
+]
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',

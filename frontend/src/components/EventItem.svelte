@@ -1,15 +1,27 @@
 <script>
 
 	export let event;
+
+	import * as api from "../api";
 	
-	function withdraw() {
+	async function withdraw() {
 		console.log(event);
-		event.has_participation = false;
+
+		let res = await api.withdraw(event.id);
+		if (res) {
+			event.has_participation = false;
+			event.participants_count -= 1;
+		}
 	}
 
-	function participate() {
+	async function participate() {
 		console.log(event);
-		event.has_participation = true;
+		let res = await api.participate(event.id);
+
+		if (res) {
+			event.has_participation = true;
+			event.participants_count += 1;
+		}
 	}
 	
 </script>
@@ -40,11 +52,11 @@
 		</small>
 		{#if event.has_participation}
 			<p>You will participate</p>
-			<button on:click={withdraw}>
+			<button on:click={async () => { await withdraw() }}>
 				Withdraw
 			</button>
 		{:else}
-			<button on:click={participate}>
+			<button on:click={async () => { await participate() }}>
 				Participate
 			</button>
 		{/if}

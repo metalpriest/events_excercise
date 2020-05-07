@@ -1,20 +1,19 @@
 <script>
-  import {login} from '../api';
-  import { createEventDispatcher } from 'svelte';
+  import {login, signUp} from '../api';
+  import * as user from "../user";
   import { navigate } from "svelte-routing";
+  import { loggedIn } from '../store';
 
   let email = "";
   let password = "";
 
-  let isLoading = false;
-
-  let isSuccess = false;
-
+  export let isLoginPage = true;
   export let submit;
 
+  let isLoading = false;
+  let isSuccess = false;
   let errors = {};
-
-  const dispatch = createEventDispatcher();
+  let apiHandler = isLoginPage ? login : signUp;
 
   const handleSubmit = () => {
     errors = {};
@@ -28,15 +27,19 @@
 
     if (Object.keys(errors).length === 0) {
       isLoading = true;
-      login(email, password)
+      apiHandler(email, password)
         .then((response) => {
           isLoading = false;
-          if (response.status === 200) {
+          if (response.status === 200 || response.status === 201) {
             isSuccess = true;
             isLoading = false;
-            
+            user.setLoggedIn();
+            loggedIn.set(true);
+            navigate("/events", { replace: true });
           } else {
-            errors = response;
+            response.json().then((data) => {
+              errors = data;
+            });
           }
         })
         .catch(err => {
@@ -134,7 +137,11 @@
     <input name="password" type="password" bind:value={password} />
 
     <button type="submit">
-      {#if isLoading}Logging in...{:else}Log in 🔒{/if}
+      {#if isLoginPage}
+        {#if isLoading}Logging in...{:else}Log in 🔒{/if}
+      {:else}
+        {#if isLoading}Sign up...{:else}Sign up 🔒{/if}
+      {/if}
     </button>
 
     {#if Object.keys(errors).length > 0}

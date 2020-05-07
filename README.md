@@ -10,7 +10,8 @@ What is done:
 
 What is not done:
 
-* Frontend - unfortunately I haven't worked with JS for last 4 years and need more time to check new frontend framworks. Will try to commit frontend later. 
+* Frontend - sign in, sign up, events list, participate/withdraw is done,
+create event in progress.
 
 #### Project structure
 
@@ -38,7 +39,9 @@ Project requires python3.8
 
 `make test-docker`
 
-Browsable API is available by http:/127.0.0.1:8000
+* Frontend http://127.0.0.1:8000
+
+* Browsable API is available by http://127.0.0.1:8000/api/swagger/
 
 First need to create user using sign_up endpoint.
 Just click in /auth/sign_up/ block, then click on "Try it out" button in the right corner

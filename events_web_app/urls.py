@@ -15,13 +15,13 @@ Including another URLconf
 """
 from django.conf import settings
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.conf.urls.static import static
+from django.views.generic import TemplateView
 
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
-
 
 schema_view = get_schema_view(
    openapi.Info(
@@ -36,10 +36,11 @@ schema_view = get_schema_view(
    permission_classes=(permissions.AllowAny,),
 )
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('api.urls')),
-    # Not for prod use
-
-    path('', schema_view.with_ui('swagger', cache_timeout=0))
+    path('api/swagger/', schema_view.with_ui('swagger', cache_timeout=0)),
+    path('', TemplateView.as_view(template_name='index.html')),
+    re_path('^(?!api).*', TemplateView.as_view(template_name='index.html'))
 ]
