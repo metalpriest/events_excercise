@@ -11,11 +11,6 @@
     let result = await api.listEvents();
     $events = result.results
   }
-
-  function test() {
-    alert("ebalal")
-  }
-
 </script>
 <main>
   <h1>Recent events</h1>
@@ -28,9 +23,9 @@
       </li>
   {/each}
   </ul>
-<!--    {#if $loggedIn}-->
-      <CreateEvent on:test={test} />
-<!--    {/if}-->
+    {#if $loggedIn}
+      <CreateEvent />
+    {/if}
   {:else}
   <p class="loading">loading...</p>
   {/if}

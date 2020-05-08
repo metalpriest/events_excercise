@@ -103,7 +103,7 @@ export async function updateEvent(data)
 {
 
   let response = await fetch(`${eventsRes}/${data.id}/`, {
-    method: 'POST',
+    method: 'PATCH',
     headers: headers,
     credentials: 'include',
     body: JSON.stringify(data)

@@ -3,6 +3,9 @@
 	export let event;
 
 	import * as api from "../api";
+	import {loggedIn, events} from '../store';
+	import CreateEvent from "../components/CreateEvent.svelte";
+
 	
 	async function withdraw() {
 		console.log(event);
@@ -50,6 +53,8 @@
 		<small>
 			Participants: <b>{event.participants_count}</b>
 		</small>
+
+	  {#if loggedIn}
 		{#if event.has_participation}
 			<p>You will participate</p>
 			<button on:click={async () => { await withdraw() }}>
@@ -60,5 +65,8 @@
 				Participate
 			</button>
 		{/if}
+		{:else}
+			<p>Log in to participate</p>
+	  {/if}
 		
 </article>

@@ -4,6 +4,7 @@
   import {events} from "../store"
   
   export let event = getEmptyEvent();
+  let errors = {};
 
   function getEmptyEvent() {
     return {
@@ -15,16 +16,27 @@
   }
 
   async function saveEvent() {
-    let result = await api.createEvent(event);
-    debugger;
-    if (result.status === 200) {
-      result = await result.json();
-      let events = $events;
-      debugger;
-      events.append(result);
-      $events = events;
+    let result;
+    if (event.id === null) {
+      result = await api.createEvent(event);
+    } else {
+      result = await api.updateEvent(event);
+    }
+
+    let msg = await result.json();
+
+    if (result.status === 201 || result.status === 200) {
+      result = msg;
+      errors = {};
+
+      // store magic
+      let evs = $events;
+      evs.push(result);
+      $events = evs;
 
       event = getEmptyEvent();
+    } else {
+      errors = msg;
     }
   }
   
@@ -39,4 +51,11 @@
   <label> Date <input bind:value={event.date_start} placeholder="2020-12-31 18:00"></label>
 
   <button on:click={saveEvent}>{#if event.id === null}Create{:else}Update{/if}</button>
+    {#if Object.keys(errors).length > 0}
+      <ul class="errors">
+        {#each Object.keys(errors) as field}
+          <li>{field}: {errors[field]}</li>
+        {/each}
+      </ul>
+    {/if}
 </div>
