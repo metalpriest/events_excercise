@@ -85,3 +85,29 @@ export async function withdraw(eventId)
 
   return response.status === 204;
 }
+
+export async function createEvent(data)
+{
+  let {title, description, date_start} = data;
+  let response = await fetch(`${eventsRes}`, {
+    method: 'POST',
+    headers: headers,
+    credentials: 'include',
+    body: JSON.stringify({title, description, date_start})
+  });
+
+  return response;
+}
+
+export async function updateEvent(data)
+{
+
+  let response = await fetch(`${eventsRes}/${data.id}/`, {
+    method: 'POST',
+    headers: headers,
+    credentials: 'include',
+    body: JSON.stringify(data)
+  });
+
+  return response;
+}
