@@ -155,7 +155,6 @@ STATIC_ROOT = '/static_collected/'
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "frontend", "public"),
-    '/var/www/static/',
 ]
 
 REST_FRAMEWORK = {
